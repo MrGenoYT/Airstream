@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { fetchInfo } from './api'
 import Loader from './components/Loader'
 import DownloadOptions from './components/DownloadOptions'
-import Header from './components/Header'
 import Footer from './components/Footer'
 import BackgroundShapes from './components/BackgroundShapes'
 
@@ -14,6 +13,16 @@ function App() {
   const [thumbnail, setThumbnail] = useState('')
   const [error, setError] = useState('')
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10)
+    }
+    
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const validateYouTubeUrl = (url) => {
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/i
@@ -65,7 +74,23 @@ function App() {
     <div className="min-h-screen flex flex-col bg-slate-900 relative">
       <BackgroundShapes />
       
-      <Header />
+      {/* New header that replaces Header.jsx component */}
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-md' : ''} bg-black py-4`}>
+        <div className="container mx-auto px-4">
+          <div className="flex md:justify-start justify-center items-center">
+            <div className="flex items-center">
+              <img 
+                src="/airstream.jpg" 
+                alt="Airstream Logo" 
+                className="w-10 h-10 rounded-full mr-3 object-cover"
+              />
+              <span className="font-extrabold text-2xl md:text-3xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+                AIRSTREAM
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
       
       <main className="flex-1 flex flex-col items-center pt-24 pb-20 px-4 z-10 relative">
         <div className={`transition-all duration-500 ease-out transform ${showSuccessAnimation ? 'scale-105' : 'scale-100'}`}>
