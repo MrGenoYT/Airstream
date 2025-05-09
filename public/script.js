@@ -308,3 +308,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     successEl.querySelector('p').textContent = message;
+    
+    // Automatically hide success message after 5 seconds
+    setTimeout(() => {
+      successEl.remove();
+    }, 5000);
+  }
+
+  // Check system preference for dark/light mode
+  function checkSystemTheme() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }
+
+  // Initialize system theme check
+  checkSystemTheme();
+  
+  // Listen for changes in system theme
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', checkSystemTheme);
+});
