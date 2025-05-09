@@ -11,12 +11,23 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [formats, setFormats] = useState([])
   const [title, setTitle] = useState('')
+  const [thumbnail, setThumbnail] = useState('')
   const [error, setError] = useState('')
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
 
+  const validateYouTubeUrl = (url) => {
+    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/i
+    return youtubeRegex.test(url)
+  }
+
   const handleFetch = async () => {
     if (!url.trim()) {
-      setError('Please enter a valid YouTube URL')
+      setError('Please enter a YouTube URL.')
+      return
+    }
+
+    if (!validateYouTubeUrl(url)) {
+      setError('Please enter a valid YouTube URL.')
       return
     }
     
@@ -27,6 +38,7 @@ function App() {
     try {
       const res = await fetchInfo(url)
       setTitle(res.data.title)
+      setThumbnail(res.data.thumbnail)
       setFormats(res.data.formats)
       setShowSuccessAnimation(true)
       setTimeout(() => setShowSuccessAnimation(false), 2000)
@@ -50,14 +62,14 @@ function App() {
   }, [url])
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-slate-900 relative">
       <BackgroundShapes />
       
       <Header />
       
-      <main className="flex-1 flex flex-col items-center justify-center px-4 pt-16 pb-24 z-10 relative">
+      <main className="flex-1 flex flex-col items-center pt-24 pb-20 px-4 z-10 relative">
         <div className={`transition-all duration-500 ease-out transform ${showSuccessAnimation ? 'scale-105' : 'scale-100'}`}>
-          <h1 className="text-5xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+          <h1 className="text-5xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 text-center">
             AIRSTREAM
           </h1>
           <p className="text-gray-400 text-center mb-8 max-w-md mx-auto">
@@ -97,11 +109,25 @@ function App() {
           )}
           
           <div className="mt-2 text-xs text-gray-500">
-            Press Ctrl+Enter to quickly fetch download links
+            Press Ctrl+Enter to quickly fetch download links.
           </div>
         </div>
 
         {loading && <Loader />}
+        
+        {thumbnail && title && !loading && (
+          <div className="mt-8 w-full max-w-2xl backdrop-blur-sm bg-gray-900/70 p-6 rounded-xl border border-gray-800 shadow-xl">
+            <div className="flex flex-col md:flex-row gap-4 items-center">
+              <div className="w-full md:w-1/3 rounded-lg overflow-hidden">
+                <img src={thumbnail} alt={title} className="w-full h-auto" />
+              </div>
+              <div className="w-full md:w-2/3">
+                <h2 className="text-xl font-bold text-white">{title}</h2>
+                <p className="text-gray-400 mt-2">Ready to download in your preferred format.</p>
+              </div>
+            </div>
+          </div>
+        )}
         
         {formats.length > 0 && <DownloadOptions formats={formats} title={title} />}
       </main>
