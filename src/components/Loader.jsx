@@ -1,4 +1,21 @@
+import { useState, useEffect } from 'react'
+
 export default function Loader() {
+  const [dots, setDots] = useState('.')
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots(prev => {
+        if (prev === '...') return '.'
+        if (prev === '..') return '...'
+        if (prev === '.') return '..'
+        return '.'
+      })
+    }, 500)
+    
+    return () => clearInterval(interval)
+  }, [])
+  
   return (
     <div className="my-8 flex flex-col items-center">
       <div className="relative">
@@ -10,7 +27,9 @@ export default function Loader() {
         <div className="w-48 h-2 bg-gray-700 rounded-full mt-3 overflow-hidden">
           <div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full animate-pulse"></div>
         </div>
-        <p className="text-gray-400 text-sm mt-2">Fetching available formats...</p>
+        <p className="text-gray-400 text-sm mt-2">
+          Fetching available formats{dots}
+        </p>
       </div>
     </div>
   )
