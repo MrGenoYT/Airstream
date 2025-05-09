@@ -1,115 +1,97 @@
-import { useState } from 'react';
-import { fetchInfo } from './api';
+import { useState } from 'react'
+import { fetchInfo } from './api'
 
 function App() {
-  const [url, setUrl] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [videoInfo, setVideoInfo] = useState(null);
+  const [url, setUrl] = useState('')
+  const [result, setResult] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const currentYear = new Date().getFullYear()
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+    e.preventDefault()
+    
+    if (!url) return
+    
+    setLoading(true)
+    setError(null)
     
     try {
-      const { data } = await fetchInfo(url);
-      setVideoInfo(data);
+      const response = await fetchInfo(url)
+      setResult(response.data)
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to fetch video information');
+      setError('Failed to fetch video information. Please check the URL.')
+      console.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
-
-  const currentYear = new Date().getFullYear();
+  }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
-      {/* Header - adjusted to be more left-aligned on desktop */}
-      <header className="py-4 px-4">
+    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      {/* Header */}
+      <header className="bg-black py-4 px-4">
         <div className="container mx-auto">
-          <div className="flex justify-start">
-            <div className="flex items-center">
-              <img 
-                src="/airstream.jpg" 
-                alt="Airstream Logo"
-                className="w-8 h-8 rounded-full mr-2 object-cover"
-              />
-              <span className="font-extrabold text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-                AIRSTREAM
-              </span>
-            </div>
+          <div className="flex items-center md:justify-start justify-center">
+            <img 
+              src="/airstream.jpg" 
+              alt="Airstream Logo"
+              className="w-8 h-8 rounded-full mr-2 object-cover"
+            />
+            <h1 className="font-extrabold text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+              AIRSTREAM
+            </h1>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow px-4 py-8">
-        <div className="container mx-auto max-w-3xl">
-          <h1 className="text-4xl font-bold text-center mb-8">
-            Download YouTube Videos Easily
-          </h1>
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+            Download YouTube Videos Fast & Free
+          </h2>
           
           <form onSubmit={handleSubmit} className="mb-8">
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col md:flex-row gap-2">
               <input
                 type="text"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                placeholder="Paste YouTube URL here..."
-                className="flex-grow px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-blue-500 focus:outline-none"
-                required
+                placeholder="Paste YouTube link here..."
+                className="flex-grow px-4 py-3 rounded-l bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-medium transition-colors disabled:opacity-50"
+                className="px-6 py-3 rounded-r bg-blue-600 hover:bg-blue-700 font-medium transition-colors disabled:opacity-50"
               >
                 {loading ? 'Loading...' : 'Download'}
               </button>
             </div>
-            {error && <p className="text-red-500 mt-2">{error}</p>}
           </form>
 
-          {videoInfo && (
-            <div className="bg-gray-800 rounded-lg p-4">
-              <h2 className="text-xl font-bold mb-4">{videoInfo.title}</h2>
-              <div className="flex flex-col md:flex-row gap-4">
-                <img
-                  src={videoInfo.thumbnail}
-                  alt={videoInfo.title}
-                  className="w-full md:w-48 rounded-lg object-cover"
-                />
-                <div className="flex-grow">
-                  <p className="mb-2"><span className="font-bold">Channel:</span> {videoInfo.author}</p>
-                  <p className="mb-4"><span className="font-bold">Duration:</span> {videoInfo.duration}</p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {videoInfo.formats.map((format) => (
-                      <a
-                        key={format.itag}
-                        href={format.url}
-                        download
-                        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-center transition-colors"
-                      >
-                        {format.qualityLabel || format.audioQuality} ({format.container})
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
+          {error && (
+            <div className="p-4 bg-red-900/30 border border-red-700 rounded-lg mb-6">
+              <p className="text-red-400">{error}</p>
+            </div>
+          )}
+
+          {result && (
+            <div className="bg-gray-800 p-6 rounded-lg">
+              <h3 className="text-xl font-bold mb-4">{result.title}</h3>
+              {/* Display download options here */}
             </div>
           )}
         </div>
       </main>
 
-      {/* Footer - integrated from Footer.jsx */}
+      {/* Footer */}
       <footer className="bg-black py-8 px-4 relative z-10 mt-auto">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <div className="flex items-center mb-4">
+            <div className="md:text-left text-center">
+              <div className="flex items-center mb-4 md:justify-start justify-center">
                 <img 
                   src="/airstream.jpg" 
                   alt="Airstream Logo"
@@ -122,7 +104,7 @@ function App() {
               <p className="text-gray-400 text-sm mb-4">
                 The fastest and most reliable YouTube video downloader. No ads, no limits, 100% free.
               </p>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 md:justify-start justify-center">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
                   {/* Roblox Logo */}
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 512 512">
@@ -132,7 +114,7 @@ function App() {
               </div>
             </div>
             
-            <div>
+            <div className="md:text-right text-center">
               <h3 className="font-bold text-white uppercase mb-4 text-sm tracking-wider">FEATURES</h3>
               <ul className="space-y-2 text-sm">
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">HD Downloads</a></li>
@@ -152,7 +134,7 @@ function App() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
