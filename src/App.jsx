@@ -1,165 +1,158 @@
-import { useState, useEffect } from 'react'
-import { fetchInfo } from './api'
-import Loader from './components/Loader'
-import DownloadOptions from './components/DownloadOptions'
-import Footer from './components/Footer'
-import BackgroundShapes from './components/BackgroundShapes'
+import { useState } from 'react';
+import { fetchInfo } from './api';
 
 function App() {
-  const [url, setUrl] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [formats, setFormats] = useState([])
-  const [title, setTitle] = useState('')
-  const [thumbnail, setThumbnail] = useState('')
-  const [error, setError] = useState('')
-  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10)
-    }
-    
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  const [url, setUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [videoInfo, setVideoInfo] = useState(null);
 
-  const validateYouTubeUrl = (url) => {
-    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/i
-    return youtubeRegex.test(url)
-  }
-
-  const handleFetch = async () => {
-    if (!url.trim()) {
-      setError('Please enter a YouTube URL.')
-      return
-    }
-
-    if (!validateYouTubeUrl(url)) {
-      setError('Please enter a valid YouTube URL.')
-      return
-    }
-    
-    setLoading(true)
-    setFormats([])
-    setError('')
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
     
     try {
-      const res = await fetchInfo(url)
-      setTitle(res.data.title)
-      setThumbnail(res.data.thumbnail)
-      setFormats(res.data.formats)
-      setShowSuccessAnimation(true)
-      setTimeout(() => setShowSuccessAnimation(false), 2000)
+      const { data } = await fetchInfo(url);
+      setVideoInfo(data);
     } catch (err) {
-      setError('Failed to fetch video info.')
+      setError(err.response?.data?.error || 'Failed to fetch video information');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false)
-  }
+  };
 
-  // Handle keyboard shortcut
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-        handleFetch()
-      }
-    }
-    
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [url])
+  const currentYear = new Date().getFullYear();
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900 relative">
-      <BackgroundShapes />
-      
-      {/* New header that replaces Header.jsx component */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-md' : ''} bg-black py-4`}>
-        <div className="container mx-auto px-4">
-          <div className="flex md:justify-start justify-center items-center">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+      {/* Header - adjusted to be more left-aligned on desktop */}
+      <header className="py-4 px-4">
+        <div className="container mx-auto">
+          <div className="flex justify-start">
             <div className="flex items-center">
               <img 
                 src="/airstream.jpg" 
-                alt="Airstream Logo" 
-                className="w-10 h-10 rounded-full mr-3 object-cover"
+                alt="Airstream Logo"
+                className="w-8 h-8 rounded-full mr-2 object-cover"
               />
-              <span className="font-extrabold text-2xl md:text-3xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+              <span className="font-extrabold text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
                 AIRSTREAM
               </span>
             </div>
           </div>
         </div>
       </header>
-      
-      <main className="flex-1 flex flex-col items-center pt-24 pb-20 px-4 z-10 relative">
-        <div className={`transition-all duration-500 ease-out transform ${showSuccessAnimation ? 'scale-105' : 'scale-100'}`}>
-          <h1 className="text-5xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 text-center">
-            AIRSTREAM
-          </h1>
-          <p className="text-gray-400 text-center mb-8 max-w-md mx-auto">
-            Download YouTube videos with our lightning-fast converter. High quality MP4 and MP3 downloads.
-          </p>
-        </div>
 
-        <div className="w-full max-w-xl backdrop-blur-sm bg-gray-900/70 p-6 rounded-xl border border-gray-800 shadow-xl">
-          <div className="flex flex-col md:flex-row gap-3">
-            <input
-              type="text"
-              className="flex-1 p-4 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-              placeholder="Paste YouTube link here."
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              aria-label="YouTube URL"
-            />
-            <button
-              className="md:w-auto w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 px-6 rounded-lg font-bold flex items-center justify-center transition-all duration-300 transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
-              onClick={handleFetch}
-              disabled={loading}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              FETCH
-            </button>
-          </div>
+      {/* Main Content */}
+      <main className="flex-grow px-4 py-8">
+        <div className="container mx-auto max-w-3xl">
+          <h1 className="text-4xl font-bold text-center mb-8">
+            Download YouTube Videos Easily
+          </h1>
           
-          {error && (
-            <div className="mt-4 p-3 bg-red-900/50 border border-red-800 text-red-200 rounded-lg flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <p>{error}</p>
+          <form onSubmit={handleSubmit} className="mb-8">
+            <div className="flex flex-col md:flex-row gap-4">
+              <input
+                type="text"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="Paste YouTube URL here..."
+                className="flex-grow px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-blue-500 focus:outline-none"
+                required
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-medium transition-colors disabled:opacity-50"
+              >
+                {loading ? 'Loading...' : 'Download'}
+              </button>
+            </div>
+            {error && <p className="text-red-500 mt-2">{error}</p>}
+          </form>
+
+          {videoInfo && (
+            <div className="bg-gray-800 rounded-lg p-4">
+              <h2 className="text-xl font-bold mb-4">{videoInfo.title}</h2>
+              <div className="flex flex-col md:flex-row gap-4">
+                <img
+                  src={videoInfo.thumbnail}
+                  alt={videoInfo.title}
+                  className="w-full md:w-48 rounded-lg object-cover"
+                />
+                <div className="flex-grow">
+                  <p className="mb-2"><span className="font-bold">Channel:</span> {videoInfo.author}</p>
+                  <p className="mb-4"><span className="font-bold">Duration:</span> {videoInfo.duration}</p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {videoInfo.formats.map((format) => (
+                      <a
+                        key={format.itag}
+                        href={format.url}
+                        download
+                        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-center transition-colors"
+                      >
+                        {format.qualityLabel || format.audioQuality} ({format.container})
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
-          
-          <div className="mt-2 text-xs text-gray-500">
-            Press Ctrl+Enter to quickly fetch download links.
-          </div>
         </div>
+      </main>
 
-        {loading && <Loader />}
-        
-        {thumbnail && title && !loading && (
-          <div className="mt-8 w-full max-w-2xl backdrop-blur-sm bg-gray-900/70 p-6 rounded-xl border border-gray-800 shadow-xl">
-            <div className="flex flex-col md:flex-row gap-4 items-center">
-              <div className="w-full md:w-1/3 rounded-lg overflow-hidden">
-                <img src={thumbnail} alt={title} className="w-full h-auto" />
+      {/* Footer - integrated from Footer.jsx */}
+      <footer className="bg-black py-8 px-4 relative z-10 mt-auto">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <div className="flex items-center mb-4">
+                <img 
+                  src="/airstream.jpg" 
+                  alt="Airstream Logo"
+                  className="w-6 h-6 rounded-full mr-2 object-cover"
+                />
+                <span className="font-extrabold text-lg tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+                  AIRSTREAM
+                </span>
               </div>
-              <div className="w-full md:w-2/3">
-                <h2 className="text-xl font-bold text-white">{title}</h2>
-                <p className="text-gray-400 mt-2">Ready to download in your preferred format.</p>
+              <p className="text-gray-400 text-sm mb-4">
+                The fastest and most reliable YouTube video downloader. No ads, no limits, 100% free.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                  {/* Roblox Logo */}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 512 512">
+                    <path d="M105.2 80.1l99.5 0 105.6 160.1-105.6 159.7-99.5 0L210.9 240 105.2 80.1zM256 298.3l54.5 82.4L365 298.3 310.5 215.9 256 298.3z"/>
+                  </svg>
+                </a>
               </div>
             </div>
+            
+            <div>
+              <h3 className="font-bold text-white uppercase mb-4 text-sm tracking-wider">FEATURES</h3>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">HD Downloads</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Audio Extraction</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Batch Processing</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">No Watermarks</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Fast Conversion</a></li>
+              </ul>
+            </div>
           </div>
-        )}
-        
-        {formats.length > 0 && <DownloadOptions formats={formats} title={title} />}
-      </main>
-      
-      <Footer />
+          
+          <div className="mt-8 pt-8 border-t border-gray-800 text-center">
+            <p className="text-gray-500 text-sm">
+              &copy; {currentYear} Airstream. All rights reserved. Airstream is not affiliated with YouTube.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
