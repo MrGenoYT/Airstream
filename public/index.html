@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Downloader</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>YouTube to MP4/MP3 Downloader</h1>
+    
+    <div class="input-container">
+      <input type="text" id="videoUrl" placeholder="Enter YouTube URL here">
+      <button id="fetchBtn">Get Info</button>
+    </div>
+    
+    <div id="videoInfo" class="hidden">
+      <div class="video-details">
+        <img id="thumbnail" src="" alt="Video thumbnail">
+        <div class="video-metadata">
+          <h2 id="videoTitle"></h2>
+          <p id="videoDuration"></p>
+        </div>
+      </div>
+      
+      <div class="format-selection">
+        <div class="format-toggle">
+          <button class="format-btn active" data-format="mp4">Video (MP4)</button>
+          <button class="format-btn" data-format="mp3">Audio (MP3)</button>
+        </div>
+        
+        <div id="qualityOptions">
+          <h3>Select Quality:</h3>
+          <div id="mp4Options" class="quality-list"></div>
+          <div id="mp3Options" class="quality-list hidden"></div>
+        </div>
+        
+        <button id="downloadBtn" class="download-btn">Download</button>
+      </div>
+    </div>
+    
+    <div id="loader" class="hidden">
+      <div class="spinner"></div>
+      <p>Processing...</p>
+    </div>
+    
+    <div id="error" class="hidden">
+      <p id="errorMessage"></p>
+    </div>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>
