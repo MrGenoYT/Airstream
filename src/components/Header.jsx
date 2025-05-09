@@ -13,27 +13,15 @@ export default function Header() {
   }, [])
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-black py-4 shadow-md">
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-black shadow-md' : 'bg-transparent'} py-4`}>
       <div className="container mx-auto px-4">
-        {/* Mobile centered, PC left aligned */}
-        <div className="flex justify-center md:justify-start items-center">
+        <div className="flex justify-start items-center">
           <div className="flex items-center">
-            <svg 
-              width="42" 
-              height="42" 
-              viewBox="0 0 24 24" 
-              className="text-blue-500 mr-3"
-            >
-              <path 
-                fill="currentColor" 
-                d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
-                opacity="0.4"
-              />
-              <path 
-                fill="currentColor" 
-                d="M10,16.5l6-4.5l-6-4.5V16.5z" 
-              />
-            </svg>
+            <img 
+              src="/airstream.jpg" 
+              alt="Airstream Logo" 
+              className="w-10 h-10 rounded-full mr-3 object-cover"
+            />
             <span className="font-extrabold text-2xl md:text-3xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
               AIRSTREAM
             </span>
