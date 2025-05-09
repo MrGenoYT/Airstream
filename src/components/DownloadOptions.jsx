@@ -30,7 +30,7 @@ export default function DownloadOptions({ formats, title }) {
       default:
         setFilteredFormats(formats)
     }
-  }, [activeTab, formats])
+  }, [activeTab, formats, audioFormats, videoFormats, combinedFormats])
 
   const handleDownload = (index) => {
     // Simulate download progress
@@ -56,12 +56,12 @@ export default function DownloadOptions({ formats, title }) {
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <h2 className="text-xl font-bold text-white flex-1 truncate">{title}</h2>
+        <h2 className="text-xl font-bold text-white flex-1 truncate">Available Download Options</h2>
       </div>
       
-      <div className="flex mb-4 border-b border-gray-800">
+      <div className="flex mb-4 border-b border-gray-800 overflow-x-auto hide-scrollbar">
         <button 
-          className={`px-4 py-2 font-medium text-sm transition-colors ${
+          className={`px-4 py-2 font-medium text-sm transition-colors whitespace-nowrap ${
             activeTab === 'all' 
               ? 'text-blue-400 border-b-2 border-blue-400' 
               : 'text-gray-400 hover:text-white'
@@ -74,7 +74,7 @@ export default function DownloadOptions({ formats, title }) {
         
         {audioFormats.length > 0 && (
           <button 
-            className={`px-4 py-2 font-medium text-sm transition-colors ${
+            className={`px-4 py-2 font-medium text-sm transition-colors whitespace-nowrap ${
               activeTab === 'audio' 
                 ? 'text-blue-400 border-b-2 border-blue-400' 
                 : 'text-gray-400 hover:text-white'
@@ -88,7 +88,7 @@ export default function DownloadOptions({ formats, title }) {
         
         {videoFormats.length > 0 && (
           <button 
-            className={`px-4 py-2 font-medium text-sm transition-colors ${
+            className={`px-4 py-2 font-medium text-sm transition-colors whitespace-nowrap ${
               activeTab === 'video' 
                 ? 'text-blue-400 border-b-2 border-blue-400' 
                 : 'text-gray-400 hover:text-white'
@@ -102,7 +102,7 @@ export default function DownloadOptions({ formats, title }) {
         
         {combinedFormats.length > 0 && (
           <button 
-            className={`px-4 py-2 font-medium text-sm transition-colors ${
+            className={`px-4 py-2 font-medium text-sm transition-colors whitespace-nowrap ${
               activeTab === 'combined' 
                 ? 'text-blue-400 border-b-2 border-blue-400' 
                 : 'text-gray-400 hover:text-white'
@@ -122,7 +122,7 @@ export default function DownloadOptions({ formats, title }) {
             className="flex flex-col md:flex-row md:items-center bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors"
           >
             <div className="p-4 flex-1">
-              <div className="flex items-center">
+              <div className="flex items-center flex-wrap">
                 {item.type === 'Audio' ? (
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
@@ -141,7 +141,7 @@ export default function DownloadOptions({ formats, title }) {
               </div>
               
               {downloadProgress[index] !== undefined && (
-                                  <div className="mt-2">
+                <div className="mt-2">
                   <div className="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-300"
@@ -158,7 +158,7 @@ export default function DownloadOptions({ formats, title }) {
             
             <a
               href={item.url}
-              className="block bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 font-semibold transition-all hover:from-blue-700 hover:to-purple-700 flex items-center justify-center md:self-stretch"
+              className="block bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 font-semibold transition-all hover:from-blue-700 hover:to-purple-700 flex items-center justify-center md:self-stretch whitespace-nowrap"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => handleDownload(index)}
@@ -182,12 +182,12 @@ export default function DownloadOptions({ formats, title }) {
       </div>
       
       <div className="mt-4 pt-4 border-t border-gray-800">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center text-sm text-gray-400">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            Select the quality that best suits your needs
+            Select the quality that best suits your needs.
           </div>
           <div className="text-sm text-gray-500">
             {filteredFormats.length} options available
@@ -196,4 +196,4 @@ export default function DownloadOptions({ formats, title }) {
       </div>
     </div>
   )
-          }
+}
