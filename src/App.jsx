@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { fetchInfo } from './api'
 import Loader from './components/Loader'
 import DownloadOptions from './components/DownloadOptions'
-import Footer from './components/Footer'
 import BackgroundShapes from './components/BackgroundShapes'
 
 function App() {
