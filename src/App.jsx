@@ -71,10 +71,10 @@ function App() {
   }, [url])
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900 relative">
+    <div className="flex flex-col min-h-screen bg-slate-900 relative">
       <BackgroundShapes />
       
-      {/* New header that replaces Header.jsx component */}
+      {/* Header */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-md' : ''} bg-black py-4`}>
         <div className="container mx-auto px-4">
           <div className="flex md:justify-start justify-center items-center">
@@ -92,7 +92,8 @@ function App() {
         </div>
       </header>
       
-      <main className="flex-1 flex flex-col items-center pt-24 pb-20 px-4 z-10 relative">
+      {/* Main content */}
+      <main className="flex-1 flex flex-col items-center pt-24 px-4 z-10 relative">
         <div className={`transition-all duration-500 ease-out transform ${showSuccessAnimation ? 'scale-105' : 'scale-100'}`}>
           <h1 className="text-5xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 text-center">
             AIRSTREAM
@@ -155,8 +156,12 @@ function App() {
         )}
         
         {formats.length > 0 && <DownloadOptions formats={formats} title={title} />}
+        
+        {/* Add spacing to ensure content doesn't get hidden behind footer */}
+        <div className="pb-8"></div>
       </main>
       
+      {/* Footer positioned at bottom */}
       <Footer />
     </div>
   )
