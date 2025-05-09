@@ -13,17 +13,7 @@ function App() {
   const [thumbnail, setThumbnail] = useState('')
   const [error, setError] = useState('')
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10)
-    }
-    
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
   const validateYouTubeUrl = (url) => {
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/i
     return youtubeRegex.test(url)
@@ -74,10 +64,10 @@ function App() {
     <div className="flex flex-col min-h-screen bg-slate-900 relative">
       <BackgroundShapes />
       
-      {/* Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-md' : ''} bg-black py-4`}>
+      {/* Header - Changed from fixed to standard flow */}
+      <header className="w-full bg-black py-4 shadow-md z-20 relative">
         <div className="container mx-auto px-4">
-          <div className="flex md:justify-start justify-center items-center">
+          <div className="flex justify-center md:justify-start items-center">
             <div className="flex items-center">
               <img 
                 src="/airstream.jpg" 
@@ -92,8 +82,8 @@ function App() {
         </div>
       </header>
       
-      {/* Main content */}
-      <main className="flex-1 flex flex-col items-center pt-24 px-4 z-10 relative">
+      {/* Main content - Removed padding-top that was offsetting fixed header */}
+      <main className="flex-1 flex flex-col items-center px-4 py-8 z-10 relative">
         <div className={`transition-all duration-500 ease-out transform ${showSuccessAnimation ? 'scale-105' : 'scale-100'}`}>
           <h1 className="text-5xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 text-center">
             AIRSTREAM
