@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const mp3Options = document.getElementById('mp3Options');
   const downloadBtn = document.getElementById('downloadBtn');
   const loader = document.getElementById('loader');
+  const progressBar = document.getElementById('progressBar');
+  const loaderText = document.getElementById('loaderText');
   const error = document.getElementById('error');
   const errorMessage = document.getElementById('errorMessage');
 
@@ -68,10 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Show loader
+    // Show loader with animated progress
     showLoader();
     hideError();
     hideVideoInfo();
+    
+    // Simulate progress (since we don't have real-time progress from the API)
+    simulateProgress();
 
     try {
       const response = await fetch(`/api/info?url=${encodeURIComponent(url)}`);
@@ -106,12 +111,28 @@ document.addEventListener('DOMContentLoaded', () => {
         mp3Options.appendChild(option);
       });
 
-      // Show video info section
-      showVideoInfo();
+      // Select first option by default for better UX
+      const firstVideoOption = mp4Options.querySelector('.quality-option');
+      const firstAudioOption = mp3Options.querySelector('.quality-option');
+      
+      if (firstVideoOption) {
+        firstVideoOption.classList.add('selected');
+        currentVideo.selectedItag = firstVideoOption.getAttribute('data-itag');
+      }
+      
+      if (firstAudioOption) {
+        firstAudioOption.classList.add('selected');
+      }
+
+      // Show video info section with a slight delay for smooth transition
+      setTimeout(() => {
+        showVideoInfo();
+        hideLoader();
+      }, 500);
+      
     } catch (error) {
-      showError(error.message || 'Error fetching video information');
-    } finally {
       hideLoader();
+      showError(error.message || 'Error fetching video information');
     }
   }
 
@@ -123,7 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     option.addEventListener('click', () => {
       // Update selected quality
-      document.querySelectorAll('.quality-option').forEach(opt => {
+      const parent = option.parentElement;
+      parent.querySelectorAll('.quality-option').forEach(opt => {
         opt.classList.remove('selected');
       });
       option.classList.add('selected');
@@ -139,6 +161,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Show loader with download message
+    showLoader('Preparing Download...');
+    simulateDownloadProgress();
+
     const params = new URLSearchParams({
       url: currentVideo.url,
       itag: currentVideo.selectedItag,
@@ -151,8 +177,18 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadLink.href = `/api/download?${params.toString()}`;
     downloadLink.download = '';
     document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    
+    // Small delay to allow progress animation
+    setTimeout(() => {
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      
+      // Hide loader after a short delay
+      setTimeout(() => {
+        hideLoader();
+        showSuccessMessage('Download started successfully!');
+      }, 1000);
+    }, 1500);
   }
 
   function formatDuration(seconds) {
@@ -170,9 +206,46 @@ document.addEventListener('DOMContentLoaded', () => {
     return result;
   }
 
+  function simulateProgress() {
+    // Reset progress bar
+    progressBar.style.width = '0%';
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 5;
+      if (progress > 90) {
+        clearInterval(interval);
+      }
+      progressBar.style.width = `${progress}%`;
+    }, 100);
+  }
+
+  function simulateDownloadProgress() {
+    // Reset progress bar
+    progressBar.style.width = '0%';
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      if (progress > 100) {
+        clearInterval(interval);
+        loaderText.textContent = 'Download Ready!';
+        return;
+      }
+      progressBar.style.width = `${progress}%`;
+      
+      if (progress > 50 && progress < 80) {
+        loaderText.textContent = 'Converting...';
+      } else if (progress >= 80) {
+        loaderText.textContent = 'Finalizing...';
+      }
+    }, 200);
+  }
+
   // UI Helper functions
-  function showLoader() {
+  function showLoader(message = 'Processing...') {
     loader.classList.remove('hidden');
+    loaderText.textContent = message;
   }
 
   function hideLoader() {
@@ -182,6 +255,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function showError(message) {
     error.classList.remove('hidden');
     errorMessage.textContent = message;
+    
+    // Automatically hide error after 5 seconds
+    setTimeout(() => {
+      error.classList.add('hidden');
+    }, 5000);
   }
 
   function hideError() {
@@ -190,9 +268,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showVideoInfo() {
     videoInfoSection.classList.remove('hidden');
+    
+    // Add entrance animation
+    videoInfoSection.style.opacity = '0';
+    videoInfoSection.style.transform = 'translateY(20px)';
+    
+    setTimeout(() => {
+      videoInfoSection.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      videoInfoSection.style.opacity = '1';
+      videoInfoSection.style.transform = 'translateY(0)';
+    }, 10);
   }
 
   function hideVideoInfo() {
     videoInfoSection.classList.add('hidden');
+    videoInfoSection.style.transition = '';
+    videoInfoSection.style.opacity = '';
+    videoInfoSection.style.transform = '';
   }
-});
+
+  function showSuccessMessage(message) {
+    // Create success message if it doesn't exist
+    let successEl = document.querySelector('.success-message');
+    
+    if (!successEl) {
+      successEl = document.createElement('div');
+      successEl.className = 'success-message';
+      
+      const icon = document.createElement('i');
+      icon.className = 'fas fa-check-circle';
+      
+      const text = document.createElement('p');
+      
+      successEl.appendChild(icon);
+      successEl.appendChild(text);
+      
+      // Insert after video info
+      videoInfoSection.parentNode.insertBefore(successEl, videoInfoSection.nextSibling);
+    }
+    
+    successEl.querySelector('p').textContent = message;
