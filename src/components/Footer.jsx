@@ -2,27 +2,16 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
   
   return (
-    <footer className="bg-black py-8 px-4 relative z-10">
+    <footer className="bg-black py-8 px-4 relative z-10 mt-auto">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <div className="flex items-center mb-4">
-              <svg 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                className="text-blue-500 mr-2"
-              >
-                <path 
-                  fill="currentColor" 
-                  d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
-                  opacity="0.4"
-                />
-                <path 
-                  fill="currentColor" 
-                  d="M10,16.5l6-4.5l-6-4.5V16.5z" 
-                />
-              </svg>
+              <img 
+                src="/airstream.jpg" 
+                alt="Airstream Logo"
+                className="w-6 h-6 rounded-full mr-2 object-cover"
+              />
               <span className="font-extrabold text-lg tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
                 AIRSTREAM
               </span>
