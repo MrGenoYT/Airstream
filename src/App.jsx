@@ -43,7 +43,7 @@ function App() {
       setShowSuccessAnimation(true)
       setTimeout(() => setShowSuccessAnimation(false), 2000)
     } catch (err) {
-      setError('Failed to fetch video info. Please verify the URL and try again.')
+      setError('Failed to fetch video info.')
     }
     
     setLoading(false)
