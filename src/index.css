@@ -9,38 +9,48 @@ body {
   background-color: #0f172a;
   color: white;
   scroll-behavior: smooth;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure the root div takes up the full height */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Custom scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px; /* Using width from snippet 2 */
+  width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(31, 41, 55, 0.5); /* Using track styles from snippet 2 */
-  border-radius: 10px; /* Using track styles from snippet 2 */
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #3b82f6, #8b5cf6); /* Using thumb styles from snippet 2 */
-  border-radius: 10px; /* Using thumb styles from snippet 2 */
+  background: linear-gradient(to bottom, #3b82f6, #3b82f6);
+  border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #475569; /* Using hover from snippet 1 */
+  background: #2563eb;
 }
 
 /* Hide scrollbar but keep functionality */
 .hide-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
-/* Custom animations (Using keyframes with rotation from snippet 1) */
+/* Custom animations */
 @keyframes float {
   0% {
     transform: translateY(0px) rotate(0deg);
@@ -77,7 +87,7 @@ body {
   }
 }
 
-/* Custom utility classes (Using durations and delays from snippet 2, with keyframes from snippet 1) */
+/* Custom utility classes */
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
@@ -90,4 +100,16 @@ body {
 .animate-float-slow {
   animation: float-slow 10s ease-in-out infinite;
   animation-delay: 2s;
+}
+
+/* Ensure container width is appropriate for desktop */
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+/* Additional background pattern */
+.bg-grid-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%233b82f6' fill-opacity='0.03' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3Ccircle cx='13' cy='13' r='1'/%3E%3C/g%3E%3C/svg%3E");
 }
