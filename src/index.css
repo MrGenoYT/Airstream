@@ -11,24 +11,36 @@ body {
   scroll-behavior: smooth;
 }
 
+/* Custom scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
+  width: 6px; /* Using width from snippet 2 */
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #1e293b;
-  border-radius: 4px;
+  background: rgba(31, 41, 55, 0.5); /* Using track styles from snippet 2 */
+  border-radius: 10px; /* Using track styles from snippet 2 */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  background: linear-gradient(to bottom, #3b82f6, #8b5cf6); /* Using thumb styles from snippet 2 */
+  border-radius: 10px; /* Using thumb styles from snippet 2 */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #475569; /* Using hover from snippet 1 */
 }
 
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Custom animations (Using keyframes with rotation from snippet 1) */
 @keyframes float {
   0% {
     transform: translateY(0px) rotate(0deg);
@@ -65,14 +77,17 @@ body {
   }
 }
 
+/* Custom utility classes (Using durations and delays from snippet 2, with keyframes from snippet 1) */
 .animate-float {
-  animation: float 8s ease-in-out infinite;
+  animation: float 6s ease-in-out infinite;
 }
 
 .animate-float-delay {
-  animation: float-delay 10s ease-in-out infinite;
+  animation: float-delay 8s ease-in-out infinite;
+  animation-delay: 1s;
 }
 
 .animate-float-slow {
-  animation: float-slow 12s ease-in-out infinite;
+  animation: float-slow 10s ease-in-out infinite;
+  animation-delay: 2s;
 }
