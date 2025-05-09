@@ -82,7 +82,7 @@ function App() {
             <input
               type="text"
               className="flex-1 p-4 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-              placeholder="Paste YouTube link here (Ctrl+Enter to fetch)"
+              placeholder="Paste YouTube link here."
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               aria-label="YouTube URL"
