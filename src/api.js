@@ -8,11 +8,39 @@ const API = axios.create({
 });
 
 /**
+ * Custom error handler to extract the error message from the response
+ */
+const handleApiError = (error) => {
+  // Extract the most specific error message available
+  const errorMessage = 
+    error.response?.data?.details || 
+    error.response?.data?.error || 
+    error.message || 
+    'An unknown error occurred';
+  
+  // Create a new error with the extracted message
+  const formattedError = new Error(errorMessage);
+  
+  // Preserve the original error properties
+  formattedError.originalError = error;
+  formattedError.status = error.response?.status;
+  
+  throw formattedError;
+};
+
+/**
  * Fetch video information from a URL
  * @param {string} url - Video URL to extract information from
  * @returns {Promise<Object>} - Video metadata and available formats
  */
-export const fetchInfo = (url) => API.post('/api/parse', { url });
+export const fetchInfo = async (url) => {
+  try {
+    const response = await API.post('/api/parse', { url });
+    return response;
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 
 /**
  * Download a video with specific format
@@ -20,7 +48,14 @@ export const fetchInfo = (url) => API.post('/api/parse', { url });
  * @param {string} format - Format ID to download (optional)
  * @returns {Promise<Object>} - Download information including download URL
  */
-export const downloadVideo = (url, format = 'best') => API.post('/api/download', { url, format });
+export const downloadVideo = async (url, format = 'best') => {
+  try {
+    const response = await API.post('/api/download', { url, format });
+    return response;
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 
 /**
  * Get full download URL for a file
