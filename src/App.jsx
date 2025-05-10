@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { fetchInfo } from './api';
 import Loader from './components/Loader';
 import DownloadOptions from './components/DownloadOptions';
-import BackgroundShapes from './components/BackgroundShapes';
+// Removed import for BackgroundShapes
 
 function App() {
   const [url, setUrl] = useState('');
@@ -12,16 +12,8 @@ function App() {
   const [thumbnail, setThumbnail] = useState('');
   const [error, setError] = useState('');
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Removed scrolled state as header is removed
+  // Removed useEffect for scroll handling as header is removed
 
   const validateYouTubeUrl = (url) => {
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/i;
@@ -71,45 +63,30 @@ function App() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [url]);
 
-  // Footer content moved here
-  const currentYear = new Date().getFullYear();
+  // Removed Footer content
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 relative overflow-hidden">
-      <BackgroundShapes />
+    <div className="min-h-screen flex flex-col bg-gray-900 text-gray-200 relative overflow-hidden">
+      {/* Removed BackgroundShapes component */}
 
-      {/* Header */}
-      <header className="bg-black py-4">
-  <div className="container mx-auto px-4">
-    <div className="flex items-center">
-      <img
-        src="/airstream.jpg"
-        alt="Airstream Logo"
-        className="w-10 h-10 rounded-full mr-3 object-cover"
-      />
-      <span className="font-extrabold text-2xl md:text-3xl tracking-tight text-white">
-        AIRSTREAM
-      </span>
-    </div>
-  </div>
-</header>
+      {/* Removed Header */}
 
-      <main className="flex-1 flex flex-col items-center pt-32 pb-20 px-4 z-10 relative">
+      <main className="flex-1 flex flex-col items-center justify-center pt-10 pb-20 px-4 z-10 relative">
         <div className={`transition-all duration-500 ease-out transform ${showSuccessAnimation ? 'scale-105' : 'scale-100'}`}>
-          <h1 className="text-5xl font-extrabold mb-2 text-blue-600 text-center">
+          <h1 className="text-5xl font-extrabold mb-2 text-blue-500 text-center">
             AIRSTREAM
           </h1>
-          <p className="text-gray-600 text-center mb-8 max-w-md mx-auto">
+          <p className="text-gray-400 text-center mb-8 max-w-md mx-auto">
             Download YouTube videos with our lightning-fast converter. High quality MP4 and MP3 downloads.
           </p>
         </div>
 
         {/* Input and Fetch Button */}
-        <div className="w-full max-w-3xl backdrop-blur-sm bg-white/70 p-6 rounded-xl shadow-xl border border-gray-200">
+        <div className="w-full max-w-3xl backdrop-blur-sm bg-gray-800/70 p-6 rounded-xl shadow-xl border border-gray-700">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <input
               type="text"
-              className="flex-1 p-4 rounded-lg bg-gray-50 border border-gray-300 text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all w-full"
+              className="flex-1 p-4 rounded-lg bg-gray-700 border border-gray-600 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all w-full"
               placeholder="Paste YouTube link here."
               value={url}
               onChange={(e) => setUrl(e.target.value)}
@@ -128,7 +105,7 @@ function App() {
           </div>
 
           {error && (
-            <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-center">
+            <div className="mt-4 p-3 bg-red-800 border border-red-700 text-red-300 rounded-lg flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -136,7 +113,7 @@ function App() {
             </div>
           )}
 
-          <div className="mt-3 text-sm text-gray-500 text-center md:text-left">
+          <div className="mt-3 text-sm text-gray-400 text-center md:text-left">
             Press Ctrl+Enter to quickly fetch download links.
           </div>
         </div>
@@ -146,14 +123,14 @@ function App() {
 
         {/* Thumbnail and Title Display */}
         {thumbnail && title && !loading && (
-          <div className="mt-12 w-full max-w-3xl backdrop-blur-sm bg-white/70 p-6 rounded-xl shadow-xl border border-gray-200 animate-fade-in">
+          <div className="mt-12 w-full max-w-3xl backdrop-blur-sm bg-gray-800/70 p-6 rounded-xl shadow-xl border border-gray-700 animate-fade-in">
             <div className="flex flex-col md:flex-row gap-6 items-center">
               <div className="w-full md:w-1/3 rounded-lg overflow-hidden shadow-md">
                 <img src={thumbnail} alt={title} className="w-full h-auto object-cover" />
               </div>
               <div className="w-full md:w-2/3 text-center md:text-left">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">{title}</h2>
-                <p className="text-gray-600">Ready to download in your preferred format.</p>
+                <h2 className="text-2xl font-bold text-gray-200 mb-2">{title}</h2>
+                <p className="text-gray-400">Ready to download in your preferred format.</p>
               </div>
             </div>
           </div>
@@ -165,14 +142,7 @@ function App() {
         )}
       </main>
 
-      {/* Footer integrated here */}
-      <footer className="relative z-10 mt-auto py-8 px-4 md:absolute md:bottom-4 md:right-4">
-        <div className="container mx-auto text-center md:text-right">
-          <p className="text-gray-600 text-sm">
-            &copy; {currentYear} Airstream. All rights reserved. Airstream is not affiliated with YouTube.
-          </p>
-        </div>
-      </footer>
+      {/* Removed Footer */}
     </div>
   );
 }
